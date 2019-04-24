@@ -186,7 +186,7 @@ for epoch in range(100):  # again, normally you would NOT do 300 epochs, it is t
 print("------after training-------")
 # See what the scores are after training
 with torch.no_grad():
-    inputs = prepare_sequence("ทางออกที่", word_to_ix)
+    inputs = prepare_sequence("ออกไปเลย", word_to_ix)
     #inputs = prepare_sequence(training_data[0][0], word_to_ix)
     tag_scores = model(inputs)
 
