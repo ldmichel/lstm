@@ -12,9 +12,9 @@ import os
 filename = "data/reviews_th_1000.txt"
 #filename = "data/Ploy.txt"
 model = "lstm"
-epochs = 300
+epochs = 30
 printtime = 20 # print every n  epoch
-hidden_size = 100  # is also embed dim
+hidden_size = 10  # is also embed dim
 n_layers = 2
 learning_rate = 0.01
 seq_length = 20
@@ -92,11 +92,7 @@ class CharRNN(torch.nn.Module):
 
         return output, hidden
 
-    def forward2(self, input, hidden):
-        encoded = self.embed(input.view(1, -1))
-        output, hidden = self.rnn(encoded.view(1, 1, -1), hidden)
-        output = self.h2o(output.view(1, -1))
-        return output, hidden
+
 
     def init_hidden(self, batch_size):
 
@@ -179,7 +175,7 @@ def train(inp, target):
 def save_model():
 
     save_filename = os.path.splitext(os.path.basename(filename))[0] + '.pt'
-    torch.save(charnet, save_filename)
+    torch.save(charnet.state_dict(), save_filename)
     print('saving file as %s' % save_filename)
 
 
@@ -246,7 +242,29 @@ try:
             print(generate(charnet, 'เ', 100, cuda=cuda), '\n')
 
     print("Saving...")
-    # save_model()
+    print("Model's state_dict:")
+    '''
+    #for param_tensor in charnet.state_dict():
+        #print(param_tensor, "\t", charnet.state_dict()[param_tensor].size())
+
+        
+                Model's state_dict:
+        embed.weight 	 torch.Size([172, 10])
+        rnn.weight_ih_l0 	 torch.Size([40, 10])
+        rnn.weight_hh_l0 	 torch.Size([40, 10])
+        rnn.bias_ih_l0 	 torch.Size([40])
+        rnn.bias_hh_l0 	 torch.Size([40])
+        rnn.weight_ih_l1 	 torch.Size([40, 10])
+        rnn.weight_hh_l1 	 torch.Size([40, 10])
+        rnn.bias_ih_l1 	 torch.Size([40])
+        rnn.bias_hh_l1 	 torch.Size([40])
+        h2o.weight 	 torch.Size([172, 10])
+        h2o.bias 	 torch.Size([172])
+        '''
+
+    save_model()
+
+
 
 except KeyboardInterrupt:
     print("backing up...")
